@@ -45,6 +45,19 @@ def main(args):
     frames_or_path = prepare_frames_or_path(args.video_path)
     prompts = load_txt(args.txt_path)
 
+    # Create results directory if it doesn't exist
+    os.makedirs(args.result_dir, exist_ok=True)
+    
+    # Get object name from the initial bbox file
+    obj_name = os.path.basename(args.txt_path).split('.')[0]
+    result_path = os.path.join(args.result_dir, f"{obj_name}.txt")
+    
+    # Update video output path to be in results directory with new naming convention
+    video_output_path = os.path.join(args.result_dir, f"{obj_name}_bbox.mp4")
+
+    # Open result file for writing
+    result_file = open(result_path, 'w')
+
     frame_rate = 30
     if args.save_to_video:
         if osp.isdir(args.video_path):
@@ -67,7 +80,7 @@ def main(args):
                 raise ValueError("No frames were loaded from the video.")
 
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out = cv2.VideoWriter(args.video_output_path, fourcc, frame_rate, (width, height))
+    out = cv2.VideoWriter(video_output_path, fourcc, frame_rate, (width, height))
 
     with torch.inference_mode(), torch.autocast("cuda", dtype=torch.float16):
         state = predictor.init_state(frames_or_path, offload_video_to_cpu=True)
@@ -90,6 +103,9 @@ def main(args):
                     bbox = [x_min, y_min, x_max - x_min, y_max - y_min]
                 bbox_to_vis[obj_id] = bbox
                 mask_to_vis[obj_id] = mask
+                
+                # Save bbox in MOT format: frame_id,track_id,x,y,w,h,conf,-1,-1,-1
+                result_file.write(f"{frame_idx+1},{obj_id+1},{bbox[0]},{bbox[1]},{bbox[2]},{bbox[3]},1,-1,-1,-1\n")
 
             if args.save_to_video:
                 img = loaded_frames[frame_idx]
@@ -105,6 +121,8 @@ def main(args):
 
         if args.save_to_video:
             out.release()
+            
+    result_file.close()
 
     del predictor, state
     gc.collect()
@@ -116,7 +134,7 @@ if __name__ == "__main__":
     parser.add_argument("--video_path", required=True, help="Input video path or directory of frames.")
     parser.add_argument("--txt_path", required=True, help="Path to ground truth text file.")
     parser.add_argument("--model_path", default="sam2/checkpoints/sam2.1_hiera_base_plus.pt", help="Path to the model checkpoint.")
-    parser.add_argument("--video_output_path", default="demo.mp4", help="Path to save the output video.")
     parser.add_argument("--save_to_video", default=True, help="Save results to a video.")
+    parser.add_argument("--result_dir", default="results", help="Directory to save tracking results.")
     args = parser.parse_args()
     main(args)
