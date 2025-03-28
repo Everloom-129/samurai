@@ -23,6 +23,15 @@ https://github.com/user-attachments/assets/9d368ca7-2e9b-4fed-9da0-d2efbf620d88
 
 All rights are reserved to the copyright owners (TM & © Universal (2019)). This clip is not intended for commercial use and is solely for academic demonstration in a research paper. Original source can be found [here](https://www.youtube.com/watch?v=cwUzUzpG8aM&t=4s).
 
+## News
+- [ ] **Incoming**: Support vot-challenge toolkit intergration.
+- [ ] **Incoming**: Release demo script to support inference on video (with mask prompt).
+- [x] **2025/02/18**: Release multi-GPU inference script.
+- [x] **2025/01/27**: Release [inference script](https://github.com/yangchris11/samurai/blob/master/sam2/tools/README.md#samurai-vos-inference) on VOS task (SA-V)!
+- [x] **2024/11/21**: Release [demo script](https://github.com/yangchris11/samurai?tab=readme-ov-file#demo-on-custom-video) to support inference on video (bounding box prompt).
+- [x] **2024/11/20** Release [inference script](https://github.com/yangchris11/samurai?tab=readme-ov-file#main-inference) on VOT task (LaSOT, LaSOT-ext, GOT-10k, UAV123, TrackingNet, OTB100)!
+- [x] **2024/11/19**: Release [paper](https://arxiv.org/abs/2411.11922), [code](https://github.com/yangchris11/samurai), and [raw results](https://drive.google.com/drive/folders/1ssiDmsC7mw5AiItYQG4poiR1JgRq305y?usp=sharing)!
+
 ## Getting Started
 
 #### SAMURAI Installation 
